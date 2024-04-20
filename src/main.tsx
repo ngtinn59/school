@@ -20,6 +20,15 @@ import { ProtectedRoute } from "./components/ProtectedRoute.tsx";
 import LoadUserAuthenticationData from "./components/LoadUserAuthenticationData.tsx";
 import ProfileLayout from "./pages/profile/ui/ProfileLayout.tsx";
 import ContactPage from "./pages/contact/ContactPage.tsx";
+import { LoginEmployer } from "./pages/employer/login.tsx";
+import EmployerRegister from "./pages/employer/register.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  EMPLOYER_ROUTES,
+  EmployerAuthProvider,
+  EmployerLayout,
+} from "./modules/employer/index.ts";
+import { EmployerProfile } from "./pages/employer/profile.tsx";
 
 const router = createBrowserRouter([
   {
@@ -100,12 +109,38 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/",
+    element: (
+      <EmployerAuthProvider>
+        <EmployerLayout />
+      </EmployerAuthProvider>
+    ),
+    children: [
+      {
+        path: EMPLOYER_ROUTES.LOGIN,
+        element: <LoginEmployer />,
+      },
+      {
+        path: EMPLOYER_ROUTES.REGISTER,
+        element: <EmployerRegister />,
+      },
+      {
+        path: EMPLOYER_ROUTES.PROFILE,
+        element: <EmployerProfile />,
+      },
+    ],
+  },
 ]);
+
+const queryClient = new QueryClient({});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
+    </QueryClientProvider>
   </React.StrictMode>
 );
