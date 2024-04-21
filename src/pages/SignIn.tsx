@@ -21,6 +21,8 @@ import { ApiLoginResponse } from "../utils/type";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { getUserAuthentication } from "../services/redux/user";
+import { useAppSelector } from "../app/hooks";
+import { EMPLOYER_ROUTES } from "../modules";
 
 export default function Login() {
   const location = useLocation();
@@ -36,6 +38,14 @@ export default function Login() {
       navigate("/");
     }
   }, [navigate, user]);
+
+  const employer = useAppSelector((state) => state.employer);
+
+  useEffect(() => {
+    if (employer.isLogin) {
+      navigate(EMPLOYER_ROUTES.PROFILE);
+    }
+  }, [employer.isLogin, navigate]);
 
   return (
     <Wrapper>

@@ -8,9 +8,9 @@ export const EmployerProfile = () => {
     if (!profile) return <Empty />;
 
     const displayData: Record<string, any> = {
-      country: { label: "country", value: profile.country },
-      city: { label: "city", value: profile.city },
-      address: { label: "address", value: profile.address },
+      country: { label: "country", value: profile.country ?? "-" },
+      city: { label: "city", value: profile.city ?? "-" },
+      address: { label: "address", value: profile.address ?? "-" },
       webstie: {
         label: "webstie",
         value: (
@@ -19,12 +19,15 @@ export const EmployerProfile = () => {
           </a>
         ),
       },
-      companyType: { label: "company type", value: profile.companyType },
-      companySize: { label: "company size", value: profile.companySize },
-      Working_days: { label: "working days", value: profile.Working_days },
+      companyType: { label: "company type", value: profile.companyType ?? "-" },
+      companySize: { label: "company size", value: profile.companySize ?? "-" },
+      Working_days: {
+        label: "working days",
+        value: profile.Working_days ?? "-",
+      },
       Overtime_policy: {
         label: "overtime policy",
-        value: profile.Overtime_policy,
+        value: profile.Overtime_policy ?? "-",
       },
       facebook: {
         label: "facebook",
@@ -38,7 +41,10 @@ export const EmployerProfile = () => {
 
     return Object.values(displayData).map((info) => {
       return (
-        <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div
+          key={info.label}
+          className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
+        >
           <dt className="text-sm font-medium leading-6 text-gray-900">
             {info.label}
           </dt>

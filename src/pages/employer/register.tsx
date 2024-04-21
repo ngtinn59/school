@@ -1,4 +1,4 @@
-import { FormEventHandler, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import icon_google from "../../assets/icons/icon_google.svg";
 import logo_robot from "../../assets/sign-up-robot-image.png";
@@ -11,13 +11,16 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../utils/baseAxios";
 import toast from "react-hot-toast";
 import { Select } from "antd";
-import { EMPLOYER_BE_API } from "../../modules";
+import { EMPLOYER_BE_API, EMPLOYER_ROUTES } from "../../modules";
+import { useAppSelector } from "../../app/hooks";
 
 export default function EmployerRegister() {
   const [isAgreeGoogle, setIsAgreeGoogle] = useState(true);
   const [isAgreeTerms, setIsAgreeTerms] = useState(true);
 
   const navigate = useNavigate();
+
+  const { isLogin } = useAppSelector((state) => state.employer);
 
   const [country, setCountry] = useState();
   const [city, setCity] = useState();
@@ -58,13 +61,17 @@ export default function EmployerRegister() {
     mutate(formData, {
       onSuccess: () => {
         toast.success("Đăng ký thành công");
-        navigate("/employer/login");
+        // navigate("/employer/login");
       },
       onError: (error) => {
         console.log(error);
       },
     });
   };
+
+  useEffect(() => {
+    if (isLogin) navigate(EMPLOYER_ROUTES.PROFILE);
+  }, [isLogin, navigate]);
 
   return (
     <Wrapper>

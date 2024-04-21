@@ -29,6 +29,7 @@ import {
   EmployerLayout,
 } from "./modules/employer/index.ts";
 import { EmployerProfile } from "./pages/employer/profile.tsx";
+import { EditProfile } from "./pages/employer/edit-profile.tsx";
 
 const router = createBrowserRouter([
   {
@@ -128,6 +129,10 @@ const router = createBrowserRouter([
       {
         path: EMPLOYER_ROUTES.PROFILE,
         element: <EmployerProfile />,
+      },
+      {
+        path: EMPLOYER_ROUTES.EDIT_PROFILE,
+        element: <EditProfile />,
       },
     ],
   },

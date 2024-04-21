@@ -31,18 +31,15 @@ export function EmployerAuthProvider({
   });
 
   useEffect(() => {
-    if (isLogin) {
-      navigate(EMPLOYER_ROUTES.PROFILE);
-    } else {
-      if (
-        location.pathname === EMPLOYER_ROUTES.LOGIN ||
-        location.pathname === EMPLOYER_ROUTES.REGISTER
-      )
-        return;
+    if (
+      accessToken ||
+      location.pathname === EMPLOYER_ROUTES.LOGIN ||
+      location.pathname === EMPLOYER_ROUTES.REGISTER
+    )
+      return;
 
-      navigate(EMPLOYER_ROUTES.LOGIN);
-    }
-  }, [isLogin, navigate, location.pathname]);
+    if (!isLogin) navigate(EMPLOYER_ROUTES.LOGIN);
+  }, [accessToken, navigate, location.pathname, isLogin]);
 
   useEffect(() => {
     if (accessToken) {
