@@ -61,7 +61,7 @@ export default function EmployerRegister() {
     mutate(formData, {
       onSuccess: () => {
         toast.success("Đăng ký thành công");
-        // navigate("/employer/login");
+        navigate("/employer/login");
       },
       onError: (error) => {
         console.log(error);
