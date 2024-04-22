@@ -13,6 +13,8 @@ import toast from "react-hot-toast";
 import { Select } from "antd";
 import { EMPLOYER_BE_API, EMPLOYER_ROUTES } from "../../modules";
 import { useAppSelector } from "../../app/hooks";
+import { BASE_URL_API } from "../../utils/constants";
+import axios from "axios";
 
 export default function EmployerRegister() {
   const [isAgreeGoogle, setIsAgreeGoogle] = useState(true);
@@ -28,12 +30,49 @@ export default function EmployerRegister() {
   const { mutate } = useMutation<unknown, unknown, FormData>({
     mutationKey: ["employer-register"],
     mutationFn: async (data) => {
-      const result = await axiosInstance.post(EMPLOYER_BE_API.REGISTER, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      try {
+        const result = await axiosInstance.post(
+          EMPLOYER_BE_API.REGISTER,
+          data,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        return result.data;
+      } catch (error: any) {
+        if (error.response.data.errors) {
+          Object.values(error.response.data.errors).forEach((err) => {
+            toast.error(err as string);
+          });
+        }
+        throw error;
+      }
+    },
+    onSuccess: (data: any) => {
+      axios.post(
+        `${BASE_URL_API}/${EMPLOYER_BE_API.SKILL}`,
+        {
+          skills: [
+            {
+              name: "JAVA",
+            },
+            {
+              name: "HTML",
+            },
+            {
+              name: "CSS",
+            },
+          ],
         },
-      });
-      return result.data;
+        {
+          headers: {
+            Authorization: `Bearer ${data.access_token}`,
+          },
+        }
+      );
     },
   });
 
@@ -48,8 +87,12 @@ export default function EmployerRegister() {
   const { data: cities } = useQuery({
     queryKey: ["cities"],
     queryFn: async () => {
-      const response = await axiosInstance.get(EMPLOYER_BE_API.CITIES);
-      return response.data.data;
+      try {
+        const response = await axiosInstance.get(EMPLOYER_BE_API.CITIES);
+        return response.data.data;
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
 
@@ -62,9 +105,6 @@ export default function EmployerRegister() {
       onSuccess: () => {
         toast.success("Đăng ký thành công");
         navigate("/employer/login");
-      },
-      onError: (error) => {
-        console.log(error);
       },
     });
   };

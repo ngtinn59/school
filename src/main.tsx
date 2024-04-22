@@ -30,6 +30,7 @@ import {
 } from "./modules/employer/index.ts";
 import { EmployerProfile } from "./pages/employer/profile.tsx";
 import { EditProfile } from "./pages/employer/edit-profile.tsx";
+import { CreateJD } from "./pages/employer/create-jd.tsx";
 
 const router = createBrowserRouter([
   {
@@ -133,6 +134,10 @@ const router = createBrowserRouter([
       {
         path: EMPLOYER_ROUTES.EDIT_PROFILE,
         element: <EditProfile />,
+      },
+      {
+        path: EMPLOYER_ROUTES.CREATE_JD,
+        element: <CreateJD />,
       },
     ],
   },

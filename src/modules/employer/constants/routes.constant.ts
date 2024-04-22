@@ -3,6 +3,7 @@ export const EMPLOYER_ROUTES = {
   REGISTER: "/employer/register",
   PROFILE: "/employer/profile",
   EDIT_PROFILE: "/employer/edit-profile",
+  CREATE_JD: "/employer/create-jd",
 } as const;
 
 export const EMPLOYER_BE_API = {
@@ -13,4 +14,7 @@ export const EMPLOYER_BE_API = {
   REGISTER: "api/employer/register",
   LOGIN: "api/login",
   PROFILE: "api/companies",
+  JOB_TYPE: "api/jobtypes",
+  SKILL: "api/company/skills",
+  CREATE_JD: "api/job",
 } as const;

@@ -7,6 +7,7 @@ import { employerActions } from "../redux/employer.slice";
 import Cookies from "js-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../../utils/baseAxios";
+import { COOKIE_ACCESS_TOKEN } from "..";
 
 export function EmployerAuthProvider({
   children,
@@ -17,7 +18,7 @@ export function EmployerAuthProvider({
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const accessToken = Cookies.get("accessToken");
+  const accessToken = Cookies.get(COOKIE_ACCESS_TOKEN);
 
   const isLogin = useAppSelector((state) => state.employer.isLogin);
 
@@ -31,24 +32,20 @@ export function EmployerAuthProvider({
   });
 
   useEffect(() => {
-    if (
-      accessToken ||
-      location.pathname === EMPLOYER_ROUTES.LOGIN ||
-      location.pathname === EMPLOYER_ROUTES.REGISTER
-    )
-      return;
+    const isLoginPage = location.pathname === EMPLOYER_ROUTES.LOGIN;
+    const isRegisterPage = location.pathname === EMPLOYER_ROUTES.REGISTER;
 
-    if (!isLogin) navigate(EMPLOYER_ROUTES.LOGIN);
-  }, [accessToken, navigate, location.pathname, isLogin]);
-
-  useEffect(() => {
     if (accessToken) {
       dispatch(employerActions.setLogin(true));
       dispatch(employerActions.setProfile(profile));
+      navigate(EMPLOYER_ROUTES.PROFILE);
     } else {
+      if (!isLoginPage && !isRegisterPage) {
+        navigate(EMPLOYER_ROUTES.LOGIN);
+      }
       dispatch(employerActions.logout());
     }
-  }, [accessToken, dispatch, profile]);
+  }, [accessToken, dispatch, location.pathname, navigate, profile]);
 
   return <>{children}</>;
 }

@@ -25,8 +25,11 @@ export function EmployerLayout() {
       children: <Outlet />,
     },
     {
-      key: "3",
-      label: "Tab 3",
+      key: EMPLOYER_ROUTES.CREATE_JD,
+      label: (
+        <NavLink to={EMPLOYER_ROUTES.CREATE_JD}>Create Job Description</NavLink>
+      ),
+      children: <Outlet />,
     },
   ];
 
@@ -36,6 +39,8 @@ export function EmployerLayout() {
       behavior: "smooth",
     });
   }, [location.pathname]);
+
+  console.log(isLogin);
 
   return (
     <div className="relative  h-screen">

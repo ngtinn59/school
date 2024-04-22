@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
+import { COOKIE_ACCESS_TOKEN } from "../constants/cookie.constant";
 
 type TInitialState = {
   isLogin: boolean;
@@ -35,8 +36,7 @@ export const employerSlice = createSlice({
       return { ...state, profile: { ...state.profile, ...actions.payload } };
     },
     logout: () => {
-      Cookies.remove("accessToken");
-      Cookies.remove("name");
+      Cookies.remove(COOKIE_ACCESS_TOKEN);
       return { ...initialState };
     },
   },

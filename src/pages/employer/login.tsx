@@ -12,7 +12,11 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../../utils/baseAxios";
 import { employerActions } from "../../modules/employer/redux/employer.slice";
-import { EMPLOYER_BE_API, EMPLOYER_ROUTES } from "../../modules/employer";
+import {
+  COOKIE_ACCESS_TOKEN,
+  EMPLOYER_BE_API,
+  EMPLOYER_ROUTES,
+} from "../../modules/employer";
 import Cookies from "js-cookie";
 import { useAppSelector } from "../../app/hooks";
 
@@ -25,12 +29,21 @@ export const LoginEmployer = () => {
   const { mutate } = useMutation<Record<string, string>, unknown, FormData>({
     mutationKey: ["employer-login"],
     mutationFn: async (data) => {
-      const result = await axiosInstance.post(EMPLOYER_BE_API.LOGIN, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      return result.data;
+      try {
+        const result = await axiosInstance.post(EMPLOYER_BE_API.LOGIN, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        return result.data;
+      } catch (error: any) {
+        if (error.response.data.error) {
+          Object.values(error.response.data.error).forEach((err) => {
+            toast.error(err as string);
+          });
+        }
+        throw error;
+      }
     },
   });
 
@@ -41,7 +54,7 @@ export const LoginEmployer = () => {
     mutate(formData, {
       onSuccess: (result: Record<string, string>) => {
         toast.success("Đăng Nhập thành công");
-        Cookies.set("accessToken", result.access_token);
+        Cookies.set(COOKIE_ACCESS_TOKEN, result.access_token);
         dispatch(employerActions.setLogin(true));
         navigate(EMPLOYER_ROUTES.PROFILE);
       },
