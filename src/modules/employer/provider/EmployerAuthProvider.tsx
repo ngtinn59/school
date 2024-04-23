@@ -31,35 +31,27 @@ export function EmployerAuthProvider({
     enabled: isLogin,
   });
 
-  const isAuthenticated = useState(false);
-
   useEffect(() => {
     const isLoginPage = location.pathname === EMPLOYER_ROUTES.LOGIN;
     const isRegisterPage = location.pathname === EMPLOYER_ROUTES.REGISTER;
+    const isAuthenticated = localStorage.getItem("isAuth");
 
     if (accessToken) {
       dispatch(employerActions.setLogin(true));
       dispatch(employerActions.setProfile(profile));
-      if (!isAuthenticated[0]) {
+      if (isAuthenticated === "0") {
         navigate(EMPLOYER_ROUTES.PROFILE);
-        isAuthenticated[1](true);
+        localStorage.setItem("isAuth", "1");
       }
     } else {
       if (!isLoginPage && !isRegisterPage) {
         navigate(EMPLOYER_ROUTES.LOGIN);
       }
 
-      isAuthenticated[1](false);
+      localStorage.setItem("isAuth", "0");
       dispatch(employerActions.logout());
     }
-  }, [
-    accessToken,
-    dispatch,
-    location.pathname,
-    navigate,
-    profile,
-    isAuthenticated,
-  ]);
+  }, [accessToken, dispatch, location.pathname, navigate, profile]);
 
   return <>{children}</>;
 }

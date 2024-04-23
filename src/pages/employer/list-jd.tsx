@@ -186,6 +186,7 @@ export const ListJD = () => {
         </h3>
 
         <Button
+          className="!bg-[#1677ff]"
           type="primary"
           onClick={() => navigate(EMPLOYER_ROUTES.CREATE_JD)}
         >
