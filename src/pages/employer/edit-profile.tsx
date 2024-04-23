@@ -126,8 +126,17 @@ export const EditProfile = () => {
 
     form.setFieldsValue({
       ...profileData,
+      country_id: countries?.find((i: any) => i.label === profileData?.country)
+        ?.value,
+      city_id: cities?.find((i: any) => i.label === profileData?.city)?.value,
+      company_type_id: companyTypes?.find(
+        (i: any) => i.label === profileData?.companyType
+      )?.value,
+      company_size_id: companySize?.find(
+        (i: any) => i.label === profileData?.companySize
+      )?.value,
     });
-  }, [profile, form]);
+  }, [profile, form, cities, countries, companySize, companyTypes]);
 
   return (
     <div className="max-w-2xl mx-auto">
