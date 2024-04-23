@@ -4,6 +4,9 @@ export const EMPLOYER_ROUTES = {
   PROFILE: "/employer/profile",
   EDIT_PROFILE: "/employer/edit-profile",
   CREATE_JD: "/employer/create-jd",
+  LIST_JD: "/employer/list-jd",
+  EDIT_JD: "/employer/edit-jd/:id",
+  LIST_APPLICATION: "/employer/list-application",
 } as const;
 
 export const EMPLOYER_BE_API = {
@@ -17,4 +20,8 @@ export const EMPLOYER_BE_API = {
   JOB_TYPE: "api/jobtypes",
   SKILL: "api/company/skills",
   CREATE_JD: "api/job",
+  LIST_JD: "api/job",
+  EDIT_JD: "api/job/:id",
+  DELETE_JD: "api/job/:id",
+  LIST_APPLICATION: "api/applications",
 } as const;

@@ -31,6 +31,9 @@ import {
 import { EmployerProfile } from "./pages/employer/profile.tsx";
 import { EditProfile } from "./pages/employer/edit-profile.tsx";
 import { CreateJD } from "./pages/employer/create-jd.tsx";
+import { ListJD } from "./pages/employer/list-jd.tsx";
+import { EditJD } from "./pages/employer/edit-jd.tsx";
+import { ListApplication } from "./pages/employer/list-application.tsx";
 
 const router = createBrowserRouter([
   {
@@ -138,6 +141,18 @@ const router = createBrowserRouter([
       {
         path: EMPLOYER_ROUTES.CREATE_JD,
         element: <CreateJD />,
+      },
+      {
+        path: EMPLOYER_ROUTES.LIST_JD,
+        element: <ListJD />,
+      },
+      {
+        path: EMPLOYER_ROUTES.EDIT_JD,
+        element: <EditJD />,
+      },
+      {
+        path: EMPLOYER_ROUTES.LIST_APPLICATION,
+        element: <ListApplication />,
       },
     ],
   },

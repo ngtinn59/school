@@ -25,9 +25,20 @@ export function EmployerLayout() {
       children: <Outlet />,
     },
     {
-      key: EMPLOYER_ROUTES.CREATE_JD,
+      key: EMPLOYER_ROUTES.LIST_JD,
       label: (
-        <NavLink to={EMPLOYER_ROUTES.CREATE_JD}>Create Job Description</NavLink>
+        <NavLink to={EMPLOYER_ROUTES.LIST_JD}>
+          Job Description Management
+        </NavLink>
+      ),
+      children: <Outlet />,
+    },
+    {
+      key: EMPLOYER_ROUTES.LIST_APPLICATION,
+      label: (
+        <NavLink to={EMPLOYER_ROUTES.LIST_APPLICATION}>
+          Applications Management
+        </NavLink>
       ),
       children: <Outlet />,
     },
@@ -40,8 +51,6 @@ export function EmployerLayout() {
     });
   }, [location.pathname]);
 
-  console.log(isLogin);
-
   return (
     <div className="relative  h-screen">
       <Toast />
@@ -52,7 +61,12 @@ export function EmployerLayout() {
           {isLogin ? (
             <Tabs
               centered
-              activeKey={location.pathname}
+              activeKey={
+                location.pathname.includes("edit-jd") ||
+                location.pathname.includes("create-jd")
+                  ? EMPLOYER_ROUTES.LIST_JD
+                  : location.pathname
+              }
               defaultActiveKey={location.pathname}
               items={items}
             />

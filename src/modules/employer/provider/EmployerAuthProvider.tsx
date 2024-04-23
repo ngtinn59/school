@@ -1,5 +1,5 @@
 import { useAppSelector } from "../../../app/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { EMPLOYER_BE_API, EMPLOYER_ROUTES } from "../constants/routes.constant";
 import { useDispatch } from "react-redux";
@@ -31,6 +31,8 @@ export function EmployerAuthProvider({
     enabled: isLogin,
   });
 
+  const isAuthenticated = useState(false);
+
   useEffect(() => {
     const isLoginPage = location.pathname === EMPLOYER_ROUTES.LOGIN;
     const isRegisterPage = location.pathname === EMPLOYER_ROUTES.REGISTER;
@@ -38,14 +40,26 @@ export function EmployerAuthProvider({
     if (accessToken) {
       dispatch(employerActions.setLogin(true));
       dispatch(employerActions.setProfile(profile));
-      navigate(EMPLOYER_ROUTES.PROFILE);
+      if (!isAuthenticated[0]) {
+        navigate(EMPLOYER_ROUTES.PROFILE);
+        isAuthenticated[1](true);
+      }
     } else {
       if (!isLoginPage && !isRegisterPage) {
         navigate(EMPLOYER_ROUTES.LOGIN);
       }
+
+      isAuthenticated[1](false);
       dispatch(employerActions.logout());
     }
-  }, [accessToken, dispatch, location.pathname, navigate, profile]);
+  }, [
+    accessToken,
+    dispatch,
+    location.pathname,
+    navigate,
+    profile,
+    isAuthenticated,
+  ]);
 
   return <>{children}</>;
 }

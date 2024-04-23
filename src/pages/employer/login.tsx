@@ -1,4 +1,4 @@
-import { FormEventHandler, useEffect } from "react";
+import { FormEventHandler } from "react";
 import { useDispatch } from "react-redux";
 import { Form, Link, useNavigate } from "react-router-dom";
 import Wrapper from "../../components/Wrapper";
@@ -18,13 +18,10 @@ import {
   EMPLOYER_ROUTES,
 } from "../../modules/employer";
 import Cookies from "js-cookie";
-import { useAppSelector } from "../../app/hooks";
 
 export const LoginEmployer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const { isLogin } = useAppSelector((state) => state.employer);
 
   const { mutate } = useMutation<Record<string, string>, unknown, FormData>({
     mutationKey: ["employer-login"],
@@ -63,10 +60,6 @@ export const LoginEmployer = () => {
       },
     });
   };
-
-  useEffect(() => {
-    if (isLogin) navigate(EMPLOYER_ROUTES.PROFILE);
-  }, [isLogin, navigate]);
 
   return (
     <Wrapper>

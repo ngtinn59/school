@@ -52,4 +52,4 @@ const Footer: React.FC<Props> = ({ className }) => {
   );
 };
 
-export default memo(Footer);
+export default Footer;

@@ -37,7 +37,7 @@ export const employerSlice = createSlice({
     },
     logout: () => {
       Cookies.remove(COOKIE_ACCESS_TOKEN);
-      return { ...initialState };
+      return { isLogin: false };
     },
   },
 });

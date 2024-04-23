@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Button,
@@ -15,12 +16,24 @@ import { EMPLOYER_BE_API, EMPLOYER_ROUTES } from "../../modules";
 import { axiosInstance } from "../../utils/baseAxios";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
 
-export const CreateJD = () => {
+export const EditJD = () => {
   const [form] = useForm();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { id } = useParams();
+
+  const { data: jd } = useQuery({
+    queryKey: [EMPLOYER_BE_API.LIST_JD, "list"],
+    queryFn: async () => {
+      return await axiosInstance.get(EMPLOYER_BE_API.LIST_JD);
+    },
+    select(data) {
+      return data?.data.data.find((x: any) => x.id === (id ? +id : 0));
+    },
+  });
 
   const { data: jobTypes } = useQuery({
     queryKey: ["jobTypes"],
@@ -92,18 +105,21 @@ export const CreateJD = () => {
   });
 
   const { mutate } = useMutation({
-    mutationKey: ["create-jd"],
+    mutationKey: [EMPLOYER_BE_API.EDIT_JD],
     mutationFn: async (values: any) => {
       try {
-        return axiosInstance.post(EMPLOYER_BE_API.CREATE_JD, {
-          ...values,
-          job_skills: values.job_skills.map((job: any) => ({
-            name: job,
-          })),
-          last_date: values.last_date.format("YYYY/MM/DD"),
-          featured: 1,
-          status: 1,
-        });
+        return axiosInstance.put(
+          EMPLOYER_BE_API.EDIT_JD.replace(":id", id ?? ""),
+          {
+            ...values,
+            job_skills: values.job_skills.map((job: any) => ({
+              name: job,
+            })),
+            last_date: values.last_date.format("YYYY/MM/DD"),
+            featured: 1,
+            status: 1,
+          }
+        );
       } catch (error: any) {
         if (error.response.data.error) {
           Object.values(error.response.data.error).forEach((err) => {
@@ -115,24 +131,34 @@ export const CreateJD = () => {
     },
     onSuccess: () => {
       navigate(EMPLOYER_ROUTES.LIST_JD);
-      toast.success("create job description successfully");
+      toast.success("Job description updated successfully");
       queryClient.invalidateQueries({
         queryKey: [EMPLOYER_BE_API.LIST_JD, "list"],
       });
     },
   });
 
+  useEffect(() => {
+    form.setFieldsValue({
+      ...jd,
+      last_date: dayjs(jd.last_date),
+      jobtype_id: jobTypes?.find((i: any) => i.label === jd?.job_type[0])
+        ?.value,
+      city_id: cities?.find((i: any) => i.label === jd?.job_city[0])?.value,
+      job_skills: jd?.skills,
+    });
+  }, [jd, form, jobTypes, cities]);
+
   return (
     <div className="max-w-lg mx-auto">
       <div className="px-4 sm:px-0">
         <h3 className="text-base font-semibold leading-7 text-gray-900">
-          Create Job Description
+          Edit Job Description
         </h3>
         <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
           Please fill information for job description.
         </p>
       </div>
-
       <Form
         onFinish={(values: any) => {
           mutate(values);
@@ -258,20 +284,3 @@ export const CreateJD = () => {
     </div>
   );
 };
-
-// "jobtype_id": 1,
-//     "city_id": 3,
-//     "title": "Software Engineer2",
-//     "salary": 60000,
-//     "status": 1,
-//     "featured": 1,
-//     "description": "This is a description of the job.",
-//     "last_date": "2024-03-31",
-//      "address": "123 Main St, City, Country",
-//     "skill_experience": "3+ years",
-//     "benefits": "Health insurance, retirement plan",
-//     "job_skills": [
-//         {"name": "CSS"},
-//         {"name": "HTML"},
-//         {"name": "Laravel"}
-//     ]
