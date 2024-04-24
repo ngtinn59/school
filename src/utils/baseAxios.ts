@@ -13,8 +13,9 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const accessToken = Cookies.get(COOKIE_ACCESS_TOKEN);
+    const accessTokenJob = Cookies.get("token");
 
-    config.headers.Authorization = `Bearer ${accessToken}`;
+    config.headers.Authorization = `Bearer ${accessToken || accessTokenJob}`;
 
     return config;
   },

@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Link, RouterProvider } from "react-router-dom";
 import { store } from "./app/store.ts";
 import "./index.css";
 import CreateCV from "./pages/CreateCV.tsx";
@@ -34,6 +34,13 @@ import { CreateJD } from "./pages/employer/create-jd.tsx";
 import { ListJD } from "./pages/employer/list-jd.tsx";
 import { EditJD } from "./pages/employer/edit-jd.tsx";
 import { ListApplication } from "./pages/employer/list-application.tsx";
+import {
+  EmployerList,
+  EmployerDetail,
+  JobDetail,
+  JobList,
+} from "./modules/jobSeeker";
+import WrapperLayout from "./modules/jobSeeker/layout/wraper.tsx";
 
 const router = createBrowserRouter([
   {
@@ -72,7 +79,22 @@ const router = createBrowserRouter([
     element: (
       <LoadUserAuthenticationData>
         <ProtectedRoute>
-          <Layout />
+          <Layout
+            moreMenu={
+              <>
+                <li>
+                  <Link to="/employer/list" className="text-white">
+                    Tìm Việc
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/profile" className="text-white">
+                    Cá nhân
+                  </Link>
+                </li>
+              </>
+            }
+          />
         </ProtectedRoute>
       </LoadUserAuthenticationData>
     ),
@@ -92,6 +114,78 @@ const router = createBrowserRouter([
             path: "job-preferences",
             element: <JobPreferences />,
           },
+        ],
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: (
+      <LoadUserAuthenticationData>
+        <ProtectedRoute>
+          <Layout
+            moreMenu={
+              <>
+                <li>
+                  <Link to="/employer/list" className="text-white">
+                    Tìm Việc
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/profile" className="text-white">
+                    Cá nhân
+                  </Link>
+                </li>
+              </>
+            }
+          />
+        </ProtectedRoute>
+      </LoadUserAuthenticationData>
+    ),
+    loader: loadLoginStatus,
+    children: [
+      {
+        path: "/employer",
+        element: <WrapperLayout />,
+        children: [
+          { path: "list", element: <EmployerList /> },
+          { path: "detail/:id", element: <EmployerDetail /> },
+        ],
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: (
+      <LoadUserAuthenticationData>
+        <ProtectedRoute>
+          <Layout
+            moreMenu={
+              <>
+                <li>
+                  <Link to="/employer/list" className="text-white">
+                    Tìm Việc
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/profile" className="text-white">
+                    Cá nhân
+                  </Link>
+                </li>
+              </>
+            }
+          />
+        </ProtectedRoute>
+      </LoadUserAuthenticationData>
+    ),
+    loader: loadLoginStatus,
+    children: [
+      {
+        path: "/job",
+        element: <WrapperLayout />,
+        children: [
+          { path: "list", element: <JobList /> },
+          { path: "detail/:id", element: <JobDetail /> },
         ],
       },
     ],
@@ -158,7 +252,13 @@ const router = createBrowserRouter([
   },
 ]);
 
-const queryClient = new QueryClient({});
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 0,
+    },
+  },
+});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

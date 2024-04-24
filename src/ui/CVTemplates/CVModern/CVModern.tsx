@@ -65,7 +65,7 @@ export default function CVModern({ className }: props) {
         <div className="pl-4 col-span-7 2xl:col-span-8 flex flex-col  z-10">
           {/* About me  */}
           <AboutMeSection
-            aboutMeDescription={userProfile.aboutMe.description}
+            aboutMeDescription={userProfile.aboutMe?.description}
             profileImage={userInformation.image_url}
           />
 

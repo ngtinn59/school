@@ -12,7 +12,6 @@ import { PROFILE_DATA_CATEGORY } from "../../../utils/constants";
 import { updateAboutMeApi } from "../../../services/api/profileApi";
 import toast from "react-hot-toast";
 
-
 type Props = {
   aboutMe: {
     description: string;
@@ -21,9 +20,9 @@ type Props = {
 };
 
 export default function AboutMe({ aboutMe }: Props) {
-  console.log(aboutMe, "about me");
   const dispatch = useDispatch();
   const userProfile = useSelector(getUserProfile);
+
   const handleEditAboutMe = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement> | undefined
   ) => {
@@ -37,7 +36,6 @@ export default function AboutMe({ aboutMe }: Props) {
     }
   };
   const handleSaveAboutMe = () => {
-    console.log(aboutMe);
     updateAboutMeApi(userProfile.aboutMe.description, aboutMe.id)
       .then((res) => {
         if (res.status_code === 200)
@@ -54,7 +52,7 @@ export default function AboutMe({ aboutMe }: Props) {
       icon={profile_about_me_icon}
     >
       <div>
-        <p>{userProfile.aboutMe.description}</p>
+        <p>{userProfile?.aboutMe?.description}</p>
         <Modal
           title={PROFILE_DATA_CATEGORY.aboutMe.title}
           handleSave={handleSaveAboutMe}
@@ -71,7 +69,7 @@ export default function AboutMe({ aboutMe }: Props) {
                     placeholder="Tell about your self"
                     inputClassName={"w-full"}
                     onChange={handleEditAboutMe}
-                    value={userProfile.aboutMe.description}
+                    value={userProfile?.aboutMe?.description}
                   />
                 </div>
               </form>

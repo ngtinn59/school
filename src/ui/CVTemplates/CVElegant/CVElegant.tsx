@@ -27,7 +27,7 @@ export default function CVElegant({ className }: props) {
       <PersonalDetailSection userInformation={userInformation} />
       <div className="p-6  flex flex-col flex-nowrap gap-1">
         {/* Render the aboutMe section */}
-        <AboutMeSection aboutMe={userProfile.aboutMe.description} />
+        <AboutMeSection aboutMe={userProfile.aboutMe?.description} />
         <Divider />
 
         {/* Render the education section */}

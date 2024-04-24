@@ -12,7 +12,7 @@ import { signOutApi } from "../../services/api/authenticationApi";
 import deleteCookie from "../../utils/function/deleteCookie";
 import toast from "react-hot-toast";
 
-const Header: React.FC = () => {
+const Header: React.FC<{ moreMenu?: React.JSX.Element }> = ({ moreMenu }) => {
   const user = useSelector(getUserAuthentication);
   const userInformation = useSelector(getUserInformation);
   const dispatch = useDispatch();
@@ -59,6 +59,9 @@ const Header: React.FC = () => {
                 Tạo CV
               </Link>
             </li>
+
+            {moreMenu}
+
             <li>
               {!(
                 user.name === "" &&

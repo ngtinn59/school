@@ -323,12 +323,12 @@ export const SELECT_YEAR: { label: string; value: string }[] = [
 ];
 
 export const BASE_URL_API = "http://localhost:8000";
-export const URL_API_LOGIN = `${BASE_URL_API}/UserServiceRestProject/rest/users`;
-export const URL_API_PROFILE = `${BASE_URL_API}/ProfileServiceRestProject/rest/profiles`;
-export const URL_API_ABOUT_ME = `${BASE_URL_API}/AboutmeServiceRestProject/rest/aboutme`;
-export const URL_API_EDUCATION = `${BASE_URL_API}/EducationServiceRestProject/rest/education`;
-export const URL_API_EXPERIENCE = `${BASE_URL_API}/ExperiencesServiceRestProject/rest/experience`;
-export const URL_API_SKILLS = `${BASE_URL_API}/SkillsServiceRestProject/rest/skills`;
-export const URL_API_PERSONAL_PROJECT = `${BASE_URL_API}/ProjectsServiceRestProject/rest/projects`;
-export const URL_API_AWARDS = `${BASE_URL_API}/AwardsServiceRestProject/rest/awards`;
-export const URL_API_CERTIFICATES = `${BASE_URL_API}/CertificatesServiceRestProject/rest/certificates`;
+export const URL_API_LOGIN = `${BASE_URL_API}/api`;
+export const URL_API_PROFILE = `${BASE_URL_API}/api/profile`;
+export const URL_API_ABOUT_ME = `${BASE_URL_API}/api/profiles/aboutMe`;
+export const URL_API_EDUCATION = `${BASE_URL_API}/api/profiles/educations`;
+export const URL_API_EXPERIENCE = `${BASE_URL_API}/api/profiles/experiences`;
+export const URL_API_SKILLS = `${BASE_URL_API}/api/profiles/skills`;
+export const URL_API_PERSONAL_PROJECT = `${BASE_URL_API}/api/profiles/projects`;
+export const URL_API_AWARDS = `${BASE_URL_API}/api/profiles/awards`;
+export const URL_API_CERTIFICATES = `${BASE_URL_API}/api/profiles/certificates`;

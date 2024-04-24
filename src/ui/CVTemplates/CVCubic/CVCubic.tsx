@@ -49,7 +49,7 @@ export default function CVCubic({ className }: props) {
             <AboutMeSection
               templateColor={templateColor}
               userInformation={userInformation}
-              aboutMe={userProfile.aboutMe.description}
+              aboutMe={userProfile.aboutMe?.description}
             />
           </div>
         </div>

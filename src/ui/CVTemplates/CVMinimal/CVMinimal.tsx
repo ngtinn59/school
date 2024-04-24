@@ -44,7 +44,7 @@ export default function CVMinimal({ className }: props) {
 
           {/* About Detail */}
           <AboutMeSection
-            aboutMe={userProfile.aboutMe.description}
+            aboutMe={userProfile.aboutMe?.description}
             templateColor={templateColor}
           />
 
