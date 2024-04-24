@@ -1,21 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  JobSeekerApiRoute,
-  JobSeekerRoute,
-} from "../constants/routes.constant";
+
 import { axiosInstance } from "../../../utils/baseAxios";
-import { Avatar, Button, Empty } from "antd";
+import { Avatar, Button, Empty, List, Typography } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const JobDetail = () => {
   const { id } = useParams();
 
-  const { data: employer } = useQuery({
-    queryKey: [JobSeekerRoute.employerDetail.replace(":id", id ?? "")],
+  const { data: dataJob } = useQuery({
+    queryKey: ["api/jobs/:id".replace(":id", id ?? "")],
     queryFn: async () => {
-      return await axiosInstance.get(
-        JobSeekerApiRoute.employerDetail.replace(":id", id ?? "")
-      );
+      return await axiosInstance.get("api/jobs/:id".replace(":id", id ?? ""));
     },
     select(data) {
       return data.data.data;
@@ -25,43 +20,46 @@ export const JobDetail = () => {
   const navigate = useNavigate();
 
   const renderProfile = () => {
-    if (!employer) return <Empty />;
+    if (!dataJob) return <Empty />;
 
     const displayData: Record<string, any> = {
-      country: { label: "country", value: employer.country ?? "-" },
-      city: { label: "city", value: employer.city ?? "-" },
-      address: { label: "address", value: employer.address ?? "-" },
+      country: { label: "title", value: dataJob?.job.title ?? "-" },
+      city: { label: "description", value: dataJob?.job.description ?? "-" },
+      address: {
+        label: "salary",
+        value:
+          dataJob?.job.salary?.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+          }) ?? "-",
+      },
       webstie: {
-        label: "webstie",
-        value: (
-          <a href={employer?.webstie ?? ""} target="_blank">
-            {employer?.webstie ?? "-"}
-          </a>
-        ),
+        label: "address",
+        value: dataJob?.job?.address ?? "-",
       },
       companyType: {
-        label: "company type",
-        value: employer.company_type ?? "-",
+        label: "job type",
+        value: dataJob?.job?.job_type ?? "-",
       },
       companySize: {
-        label: "company size",
-        value: employer.company_size ?? "-",
+        label: "job city",
+        value: dataJob?.job?.jobcity?.[0] ?? "-",
       },
       Working_days: {
-        label: "working days",
-        value: employer.Working_days ?? "-",
+        label: "skill experience",
+        value: dataJob?.job?.skill_experience ?? "-",
       },
       Overtime_policy: {
-        label: "overtime policy",
-        value: employer.Overtime_policy ?? "-",
+        label: "skills",
+        value: dataJob?.job?.skills ?? "-",
       },
       facebook: {
-        label: "facebook",
-        value: (
-          <a href={employer?.facebook ?? ""} target="_blank">
-            {employer?.facebook ?? "-"}
-          </a>
-        ),
+        label: "benefits",
+        value: dataJob?.job?.benefits ?? "-",
+      },
+      last_date: {
+        label: "lastdate",
+        value: dataJob?.job?.last_date ?? "-",
       },
     };
 
@@ -86,36 +84,42 @@ export const JobDetail = () => {
     <div className="max-w-2xl mx-auto pt-8">
       <div className="px-4 sm:px-0">
         <h3 className="text-base font-semibold leading-7 text-gray-900">
-          Employer Profile
+          Job Detail
         </h3>
-        <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
-          details and information.
-        </p>
-      </div>
-
-      <div>
-        <Avatar
-          size={100}
-          src={
-            <img
-              src={
-                employer?.logo ??
-                `https://avatar.iran.liara.run/username?username=${employer?.name?.slice(
-                  0
-                )}+${employer?.name?.slice(1)}`
-              }
-              alt="avatar"
-            />
-          }
-        />
       </div>
 
       <div className="mt-6 border-t border-gray-100">
         <dl className="divide-y divide-gray-100">{renderProfile()}</dl>
       </div>
 
+      <div className="my-5">
+        <List
+          header={<Typography.Title level={5}>Related Job</Typography.Title>}
+          itemLayout="horizontal"
+          dataSource={dataJob?.jobRecommendations ?? []}
+          renderItem={(item: any, index) => (
+            <List.Item
+              className="!cursor-pointer"
+              onClick={() =>
+                navigate("/job/detail/:id".replace(":id", item.id))
+              }
+            >
+              <List.Item.Meta
+                avatar={
+                  <Avatar
+                    src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+                  />
+                }
+                title={<Typography.Text>{item.title}</Typography.Text>}
+                description={item.job_city?.[0]}
+              />
+            </List.Item>
+          )}
+        ></List>
+      </div>
+
       <div className="flex justify-center">
-        <Button onClick={() => navigate(-1)}> Back </Button>
+        <Button onClick={() => navigate("/job/list")}> Back </Button>
       </div>
     </div>
   );

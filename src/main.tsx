@@ -41,6 +41,7 @@ import {
   JobList,
 } from "./modules/jobSeeker";
 import WrapperLayout from "./modules/jobSeeker/layout/wraper.tsx";
+import { JobsApply } from "./modules/jobSeeker/pages/job-apply.tsx";
 
 const router = createBrowserRouter([
   {
@@ -185,6 +186,7 @@ const router = createBrowserRouter([
         element: <WrapperLayout />,
         children: [
           { path: "list", element: <JobList /> },
+          { path: "applied", element: <JobsApply /> },
           { path: "detail/:id", element: <JobDetail /> },
         ],
       },

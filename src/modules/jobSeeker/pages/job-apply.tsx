@@ -1,81 +1,20 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { JobSeekerRoute } from "../constants/routes.constant";
-import { axiosInstance } from "../../../utils/baseAxios";
-import { Button, message, Space, Table, TableColumnsType } from "antd";
-import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { TableColumnsType, Space, Button, Table, message } from "antd";
+import { axiosInstance } from "../../../utils/baseAxios";
+import { JobSeekerRoute } from "../constants/routes.constant";
 
-import axios from "axios";
-import { BASE_URL_API } from "../../../utils/constants";
-
-export const JobList = () => {
-  const queryClient = useQueryClient();
-
-  const { data: JobList, isLoading } = useQuery({
-    queryKey: [JobSeekerRoute.jobList],
-    queryFn: async () => {
-      return await axiosInstance.get("api");
-    },
-    select(data) {
-      return data.data.data;
-    },
-  });
-
-  const { data: JobsApply } = useQuery({
+export const JobsApply = () => {
+  const { data: JobsApply, isLoading } = useQuery({
     queryKey: ["job-apply"],
     queryFn: async () => {
       return await axiosInstance.get("api/viewAppliedJobs");
     },
     select(data) {
-      return data.data.data.map((i: any) => i.id);
+      return data.data.data;
     },
   });
-
-  const { data: jobCv } = useQuery({
-    queryKey: ["job-cv"],
-    queryFn: async () => {
-      return await axiosInstance.get("api/cvs");
-    },
-    select(data) {
-      return data.data.data.find((i: any) => i?.is_default === 1);
-    },
-  });
-
-  const { mutate: applyJob } = useMutation({
-    mutationKey: ["apply-job"],
-    mutationFn: async (id: string) => {
-      const response = await fetch(jobCv?.file_path);
-
-      if (!response.ok) {
-        throw new Error("Failed to download PDF");
-      }
-
-      const blob = (await response.json()).blob();
-      const file = new File([blob], "document.pdf", {
-        type: "application/pdf",
-      });
-
-      const formData = new FormData();
-      formData.append("cv", file);
-
-      axios.post(`${BASE_URL_API}/api/jobs/${id}/apply`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
-      });
-    },
-    onSuccess() {
-      message.success("Apply job successfully");
-    },
-    onError() {
-      message.error("Apply job failed");
-    },
-  });
-
-  const navigate = useNavigate();
 
   const { data: favorites } = useQuery({
     queryKey: ["api/favorites/saved-jobs"],
@@ -98,6 +37,8 @@ export const JobList = () => {
       message.error("Save job failed");
     },
   });
+
+  const queryClient = useQueryClient();
 
   const columns: TableColumnsType<any> = [
     {
@@ -200,28 +141,6 @@ export const JobList = () => {
         return (
           <Space size="middle">
             <Button
-              onClick={() =>
-                navigate("/job/detail/:id".replace(":id", record.id))
-              }
-            >
-              Detail
-            </Button>
-            {JobsApply?.includes(record.id) ? (
-              <Button disabled>Applied</Button>
-            ) : (
-              <Button
-                onClick={() => {
-                  applyJob(record.id);
-                  queryClient.invalidateQueries({
-                    queryKey: [JobSeekerRoute.jobList],
-                  });
-                }}
-              >
-                Apply
-              </Button>
-            )}
-
-            <Button
               onClick={() => {
                 favorite(record?.id);
                 queryClient.invalidateQueries({
@@ -233,7 +152,6 @@ export const JobList = () => {
                 <FontAwesomeIcon
                   icon={faStar}
                   color={isFavored ? "#4096ff" : undefined}
-                  // color={"#4096ff" }
                 />
               }
             ></Button>
@@ -242,12 +160,11 @@ export const JobList = () => {
       },
     },
   ];
-
   return (
     <div className="mt-5 max-w-[1440px] mx-auto">
       <div className="px-4 mb-5 sm:px-0 flex justify-between">
         <h3 className="text-base font-semibold leading-7 text-gray-900">
-          Job List
+          Job Applied
         </h3>
       </div>
 
@@ -257,7 +174,7 @@ export const JobList = () => {
         }}
         rowKey="id"
         loading={isLoading}
-        dataSource={JobList ?? []}
+        dataSource={JobsApply ?? []}
         columns={columns}
       />
     </div>

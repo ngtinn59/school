@@ -13,6 +13,10 @@ export default function WrapperLayout() {
       to: JobSeekerRoute.jobList,
       label: "Job List",
     },
+    {
+      to: "/job/applied",
+      label: "Job Applied",
+    },
   ];
   return (
     <div className="bg-gray-100 h-full pb-8">
