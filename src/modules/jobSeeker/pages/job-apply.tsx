@@ -1,9 +1,6 @@
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { TableColumnsType, Space, Button, Table, message } from "antd";
+import { useQuery } from "@tanstack/react-query";
+import { TableColumnsType, Table } from "antd";
 import { axiosInstance } from "../../../utils/baseAxios";
-import { JobSeekerRoute } from "../constants/routes.constant";
 
 export const JobsApply = () => {
   const { data: JobsApply, isLoading } = useQuery({
@@ -15,30 +12,6 @@ export const JobsApply = () => {
       return data.data.data;
     },
   });
-
-  const { data: favorites } = useQuery({
-    queryKey: ["api/favorites/saved-jobs"],
-    queryFn: async () => {
-      return await axiosInstance.get("api/favorites/saved-jobs");
-    },
-    select(data) {
-      return data.data.data;
-    },
-  });
-
-  const { mutate: favorite } = useMutation({
-    mutationFn: async (id) => {
-      return await axiosInstance.post(`api/favorites/${id}/save`);
-    },
-    onSuccess() {
-      message.success("Save job successfully");
-    },
-    onError() {
-      message.error("Save job failed");
-    },
-  });
-
-  const queryClient = useQueryClient();
 
   const columns: TableColumnsType<any> = [
     {
@@ -73,50 +46,18 @@ export const JobsApply = () => {
       title: "Job Type",
       dataIndex: "job_type",
       key: "job_type",
-      render: (value: any) => {
-        return (
-          <div className="flex flex-col">
-            {value.map((i: any) => (
-              <div key={Math.random() + i}>{i}</div>
-            ))}
-          </div>
-        );
-      },
       width: 300,
     },
     {
       title: "Job City",
-      dataIndex: "job_city",
-      key: "job_city",
+      dataIndex: "city",
+      key: "city",
       width: 300,
-      render: (value: any) => {
-        return (
-          <div className="flex flex-col">
-            {value.map((i: any) => (
-              <div key={Math.random() + i}>{i}</div>
-            ))}
-          </div>
-        );
-      },
-    },
-    {
-      title: "Skills",
-      dataIndex: "skills",
-      key: "skills",
-      render: (value: any) => {
-        return (
-          <div className="flex flex-col">
-            {value.map((i: any) => (
-              <div key={Math.random() + i}>{i}</div>
-            ))}
-          </div>
-        );
-      },
     },
     {
       title: "Skill Experience",
       dataIndex: "skill_experience",
-      key: "skills",
+      key: "skill_experience",
       width: 300,
     },
     {
@@ -130,34 +71,6 @@ export const JobsApply = () => {
       dataIndex: "last_date",
       key: "last_date",
       width: 300,
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      width: "50px",
-      render(_: any, record: any) {
-        const isFavored = favorites?.some((item: any) => item.id === record.id);
-
-        return (
-          <Space size="middle">
-            <Button
-              onClick={() => {
-                favorite(record?.id);
-                queryClient.invalidateQueries({
-                  queryKey: [JobSeekerRoute.jobList],
-                });
-              }}
-              disabled={isFavored}
-              icon={
-                <FontAwesomeIcon
-                  icon={faStar}
-                  color={isFavored ? "#4096ff" : undefined}
-                />
-              }
-            ></Button>
-          </Space>
-        );
-      },
     },
   ];
   return (

@@ -21,7 +21,7 @@ export const signInApi = async (
           resolve({
             status: 200,
             data: {
-              name: res.user.name,
+              name: res.name,
               token: res.access_token,
               token_type: res.token_type,
               success: true,

@@ -88,11 +88,6 @@ const router = createBrowserRouter([
                     Tìm Việc
                   </Link>
                 </li>
-                <li>
-                  <Link to="/profile" className="text-white">
-                    Cá nhân
-                  </Link>
-                </li>
               </>
             }
           />
@@ -132,14 +127,9 @@ const router = createBrowserRouter([
                     Tìm Việc
                   </Link>
                 </li>
-                <li>
-                  <Link to="/profile" className="text-white">
-                    Cá nhân
-                  </Link>
-                </li>
               </>
             }
-          />
+          />{" "}
         </ProtectedRoute>
       </LoadUserAuthenticationData>
     ),
@@ -166,11 +156,6 @@ const router = createBrowserRouter([
                 <li>
                   <Link to="/employer/list" className="text-white">
                     Tìm Việc
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/profile" className="text-white">
-                    Cá nhân
                   </Link>
                 </li>
               </>

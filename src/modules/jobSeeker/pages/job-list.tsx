@@ -16,7 +16,7 @@ export const JobList = () => {
   const { data: JobList, isLoading } = useQuery({
     queryKey: [JobSeekerRoute.jobList],
     queryFn: async () => {
-      return await axiosInstance.get("api");
+      return await axiosInstance.get("api/list-jobs");
     },
     select(data) {
       return data.data.data;
@@ -33,42 +33,38 @@ export const JobList = () => {
     },
   });
 
-  const { data: jobCv } = useQuery({
-    queryKey: ["job-cv"],
-    queryFn: async () => {
-      return await axiosInstance.get("api/cvs");
-    },
-    select(data) {
-      return data.data.data.find((i: any) => i?.is_default === 1);
-    },
-  });
-
-  const { mutate: applyJob } = useMutation({
+  const { mutate: applyJob, isPending: aLoading } = useMutation({
     mutationKey: ["apply-job"],
     mutationFn: async (id: string) => {
-      const response = await fetch(jobCv?.file_path);
+      const responseAxios = await axios.get(`${BASE_URL_API}/api/download-cv`, {
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      });
 
-      if (!response.ok) {
-        throw new Error("Failed to download PDF");
-      }
+      const blobUrl = URL.createObjectURL(responseAxios.data);
+      const response = await fetch(blobUrl);
+      const blob = await response.blob();
 
-      const blob = (await response.json()).blob();
-      const file = new File([blob], "document.pdf", {
+      const file = new File([blob], new Date().getTime().toString() + ".pdf", {
         type: "application/pdf",
       });
 
       const formData = new FormData();
       formData.append("cv", file);
 
-      axios.post(`${BASE_URL_API}/api/jobs/${id}/apply`, formData, {
+      return axiosInstance.post(`api/jobs/${id}/apply`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${Cookies.get("token")}`,
+          "Content-Type": "multipart/form-data;",
         },
       });
     },
     onSuccess() {
       message.success("Apply job successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["job-apply"],
+      });
     },
     onError() {
       message.error("Apply job failed");
@@ -87,7 +83,7 @@ export const JobList = () => {
     },
   });
 
-  const { mutate: favorite } = useMutation({
+  const { mutate: favorite, isPending: bLoading } = useMutation({
     mutationFn: async (id) => {
       return await axiosInstance.post(`api/favorites/${id}/save`);
     },
@@ -98,6 +94,20 @@ export const JobList = () => {
       message.error("Save job failed");
     },
   });
+
+  const { mutate: unFavorite, isPending: cLoading } = useMutation({
+    mutationFn: async (id) => {
+      return await axiosInstance.post(`api/favorites/${id}/unsave`);
+    },
+    onSuccess() {
+      message.success("un-save job successfully");
+    },
+    onError() {
+      message.error("un-save job failed");
+    },
+  });
+
+  const loading = aLoading || bLoading || cLoading;
 
   const columns: TableColumnsType<any> = [
     {
@@ -221,22 +231,33 @@ export const JobList = () => {
               </Button>
             )}
 
-            <Button
-              onClick={() => {
-                favorite(record?.id);
-                queryClient.invalidateQueries({
-                  queryKey: [JobSeekerRoute.jobList],
-                });
-              }}
-              disabled={isFavored}
-              icon={
-                <FontAwesomeIcon
-                  icon={faStar}
-                  color={isFavored ? "#4096ff" : undefined}
-                  // color={"#4096ff" }
-                />
-              }
-            ></Button>
+            {!JobsApply?.includes(record.id) && (
+              <Button
+                onClick={() => {
+                  isFavored
+                    ? unFavorite(record?.id, {
+                        onSuccess() {
+                          queryClient.invalidateQueries({
+                            queryKey: ["api/favorites/saved-jobs"],
+                          });
+                        },
+                      })
+                    : favorite(record?.id, {
+                        onSuccess() {
+                          queryClient.invalidateQueries({
+                            queryKey: ["api/favorites/saved-jobs"],
+                          });
+                        },
+                      });
+                }}
+                icon={
+                  <FontAwesomeIcon
+                    icon={faStar}
+                    color={isFavored ? "#4096ff" : undefined}
+                  />
+                }
+              />
+            )}
           </Space>
         );
       },
@@ -256,7 +277,7 @@ export const JobList = () => {
           x: 1440,
         }}
         rowKey="id"
-        loading={isLoading}
+        loading={loading || isLoading}
         dataSource={JobList ?? []}
         columns={columns}
       />
