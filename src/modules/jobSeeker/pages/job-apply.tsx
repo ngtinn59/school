@@ -6,7 +6,7 @@ export const JobsApply = () => {
   const { data: JobsApply, isLoading } = useQuery({
     queryKey: ["job-apply"],
     queryFn: async () => {
-      return await axiosInstance.get("api/viewAppliedJobs");
+      return await axiosInstance.get("api/jobs/applied");
     },
     select(data) {
       return data.data.data;

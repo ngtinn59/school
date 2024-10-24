@@ -26,7 +26,7 @@ export const JobList = () => {
   const { data: JobsApply } = useQuery({
     queryKey: ["job-apply"],
     queryFn: async () => {
-      return await axiosInstance.get("api/viewAppliedJobs");
+      return await axiosInstance.get("api/jobs/applied");
     },
     select(data) {
       return data.data.data.map((i: any) => i.id);
@@ -76,7 +76,7 @@ export const JobList = () => {
   const { data: favorites } = useQuery({
     queryKey: ["api/favorites/saved-jobs"],
     queryFn: async () => {
-      return await axiosInstance.get("api/favorites/saved-jobs");
+      return await axiosInstance.get("api/jobs/favorites/saved");
     },
     select(data) {
       return data.data.data;
@@ -85,7 +85,7 @@ export const JobList = () => {
 
   const { mutate: favorite, isPending: bLoading } = useMutation({
     mutationFn: async (id) => {
-      return await axiosInstance.post(`api/favorites/${id}/save`);
+      return await axiosInstance.post(`api/jobs/favorites/${id}/save`);
     },
     onSuccess() {
       message.success("Save job successfully");
@@ -97,7 +97,7 @@ export const JobList = () => {
 
   const { mutate: unFavorite, isPending: cLoading } = useMutation({
     mutationFn: async (id) => {
-      return await axiosInstance.post(`api/favorites/${id}/unsave`);
+      return await axiosInstance.post(`api/jobs/favorites/${id}/unsave`);
     },
     onSuccess() {
       message.success("un-save job successfully");

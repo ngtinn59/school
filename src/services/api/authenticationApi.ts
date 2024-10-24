@@ -4,100 +4,105 @@ import { ApiLoginResponse } from "../../utils/type";
 import { generateConfig } from "./profileApi";
 
 export const signInApi = async (
-  email: string,
-  password: string
+    email: string,
+    password: string
 ): Promise<ApiLoginResponse> => {
-  return new Promise((resolve) => {
-    fetch(`${URL_API_LOGIN}/login`, {
+  try {
+    const res = await fetch(`${URL_API_LOGIN}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.status_code === 200) {
-          resolve({
-            status: 200,
-            data: {
-              name: res.name,
-              token: res.access_token,
-              token_type: res.token_type,
-              success: true,
-              message: "Login successfully",
-            },
-          });
-        } else {
-          resolve({
-            status: res.status_code,
-            data: {},
-            errors: res.error,
-          });
-        }
-      })
-      .catch((err) => {
-        console.log("err", err);
-        resolve({
-          status: 401,
-          data: { success: false, message: "Invalid email or password" },
-        });
-      });
-  });
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      return {
+        status: 200,
+        data: {
+          name: data.name,
+          token: data.access_token,
+          token_type: data.token_type,
+          success: true,
+          message: "Login successfully",
+        },
+      };
+    } else {
+      return {
+        status: data.status_code,
+        data: {},
+        errors: data.error,
+      };
+    }
+  } catch (err) {
+    console.error("Login error:", err);
+    return {
+      status: 401,
+      data: { success: false, message: "Invalid email or password" },
+    };
+  }
 };
 
 export const signUpApi = async (
-  email: string,
-  password: string,
-  name: string
+    email: string,
+    password: string,
+    name: string
 ): Promise<ApiLoginResponse> => {
-  return new Promise((resolve) => {
-    fetch(`${URL_API_LOGIN}/register`, {
+  try {
+    const res = await fetch(`${URL_API_LOGIN}/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password, name }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.status_code === 200) {
-          resolve({
-            status: 200,
-            data: {
-              name: res.user.name,
-              token: res.access_token,
-              token_type: res.token_type,
-              message: "Sign up successfully",
-            },
-          });
-        } else {
-          resolve({
-            status: res.status_code,
-            // the error response from back end are email, password, name
-            errors: res.error,
-            data: {},
-          });
-        }
-      })
-      .catch((err) => {
-        console.log("err", err);
-        resolve({
-          status: err.status_code,
-          data: { success: false, message: err },
-        });
-      });
-  });
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      return {
+        status: 200,
+        data: {
+          name: data.user.name,
+          token: data.access_token,
+          token_type: data.token_type,
+          message: data.message, // Message indicating successful registration
+        },
+      };
+    } else {
+      return {
+        status: data.status_code,
+        // Handle the error responses from backend
+        errors: data.error,
+        data: {},
+      };
+    }
+  } catch (err) {
+    console.error("Registration error:", err);
+    return {
+      status: 500,
+      data: { success: false, message: "An error occurred during registration" },
+    };
+  }
 };
 
 export const signOutApi = async () => {
   const config = await generateConfig(); // Assuming you have a function to generate the configuration
   try {
     const response = await axios.delete(`${URL_API_LOGIN}/logout`, config);
-    return response.data;
+    return {
+      success: true,
+      message: "Logout successful",
+      data: response.data,
+    };
   } catch (error) {
     console.error("Error logging out:", error);
-    // You might want to handle error cases here
-    throw error;
+    return {
+      success: false,
+      message: error.response?.data?.message || "Error logging out",
+      data: null,
+    };
   }
 };

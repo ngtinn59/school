@@ -5,6 +5,6 @@ export const JobSeekerRoute = {
 } as const;
 
 export const JobSeekerApiRoute = {
-  employerList: "api/companies1",
-  employerDetail: "api/companies1/:id",
+  employerList: "api/list-companies",
+  employerDetail: "api/list-companies/:id",
 } as const;

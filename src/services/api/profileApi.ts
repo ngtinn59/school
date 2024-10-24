@@ -53,14 +53,14 @@ export const updateUserInformationApi = async (
   data: UserInformationType,
   image: File | undefined
 ) => {
-  // const formDataToSend = new FormData();
-  // formDataToSend.append("name", data.name);
-  // formDataToSend.append("title", data.title);
-  // formDataToSend.append("email", data.email);
-  // formDataToSend.append("phone", data.phone);
-  // formDataToSend.append("birthday", data.birthday);
-  // data.gender && formDataToSend.append("gender", data.gender);
-  // data.location && formDataToSend.append("location", data.location);
+  const formDataToSend = new FormData();
+  formDataToSend.append("name", data.name);
+  formDataToSend.append("title", data.title);
+  formDataToSend.append("email", data.email);
+  formDataToSend.append("phone", data.phone);
+  formDataToSend.append("birthday", data.birthday);
+  data.gender && formDataToSend.append("gender", data.gender);
+  data.location && formDataToSend.append("location", data.location);
   if (image) {
     const imageRes = await uploadToCloudflare(image);
     console.log(imageRes);

@@ -59,83 +59,11 @@ export const ListJD = () => {
       width: 300,
       key: "description",
     },
-    {
-      title: "Salary",
-      dataIndex: "salary",
-      key: "salary",
-      render: (value: any) => {
-        return value.toLocaleString("en-US", {
-          style: "currency",
-          currency: "USD",
-        });
-      },
-    },
+
     {
       title: "Address",
       dataIndex: "address",
       key: "address",
-    },
-    {
-      title: "Job Type",
-      dataIndex: "job_type",
-      key: "job_type",
-      render: (value: any) => {
-        return (
-          <div className="flex flex-col">
-            {value.map((i: any) => (
-              <div key={Math.random() + i}>{i}</div>
-            ))}
-          </div>
-        );
-      },
-      width: 300,
-    },
-    {
-      title: "Job City",
-      dataIndex: "job_city",
-      key: "job_city",
-      width: 300,
-      render: (value: any) => {
-        return (
-          <div className="flex flex-col">
-            {value.map((i: any) => (
-              <div key={Math.random() + i}>{i}</div>
-            ))}
-          </div>
-        );
-      },
-    },
-    {
-      title: "Skills",
-      dataIndex: "skills",
-      key: "skills",
-      render: (value: any) => {
-        return (
-          <div className="flex flex-col">
-            {value.map((i: any) => (
-              <div key={Math.random() + i}>{i}</div>
-            ))}
-          </div>
-        );
-      },
-    },
-    {
-      title: "Skill Experience",
-      dataIndex: "skill_experience",
-      key: "skills",
-      width: 300,
-    },
-    {
-      title: "Benefits",
-      dataIndex: "benefits",
-      width: 300,
-      key: "benefits",
-    },
-    {
-      title: "Last Date",
-      dataIndex: "last_date",
-      key: "last_date",
-      width: 300,
     },
     {
       title: "Status",

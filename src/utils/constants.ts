@@ -322,7 +322,7 @@ export const SELECT_YEAR: { label: string; value: string }[] = [
   { value: "2025", label: "2025" },
 ];
 
-export const BASE_URL_API = "http://localhost:8000";
+export const BASE_URL_API = "http://101.101.96.43";
 export const URL_API_LOGIN = `${BASE_URL_API}/api`;
 export const URL_API_PROFILE = `${BASE_URL_API}/api/profile`;
 export const URL_API_ABOUT_ME = `${BASE_URL_API}/api/profiles/aboutMe`;
